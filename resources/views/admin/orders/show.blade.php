@@ -111,8 +111,7 @@
                             <h4 class="text-lg font-bold mb-4 border-b pb-2">Bukti Pembayaran</h4>
                             @if($order->payment_proof)
                                 @php
-                                    [$pfFolder, $pfFile] = explode('/', $order->payment_proof, 2);
-                                    $pfUrl = route('storage.file', ['folder' => $pfFolder, 'filename' => $pfFile]);
+                                    $pfUrl = route('storage.file', ['path' => $order->payment_proof]);
                                 @endphp
                                 <div class="mb-6">
                                     <button type="button" onclick="openImageModal('{{ $pfUrl }}')" title="Klik untuk melihat gambar penuh" class="block focus:outline-none text-left w-full max-w-xs">
@@ -129,8 +128,7 @@
                             <h4 class="text-lg font-bold mb-4 border-b pb-2">Screenshot IMEI</h4>
                             @if($order->screenshot_imei)
                                 @php
-                                    [$siFolder, $siFile] = explode('/', $order->screenshot_imei, 2);
-                                    $siUrl = route('storage.file', ['folder' => $siFolder, 'filename' => $siFile]);
+                                    $siUrl = route('storage.file', ['path' => $order->screenshot_imei]);
                                 @endphp
                                 <div class="mb-6">
                                     <button type="button" onclick="openImageModal('{{ $siUrl }}')" title="Klik untuk melihat gambar penuh" class="block focus:outline-none text-left w-full max-w-xs">

@@ -10,9 +10,7 @@ use App\Http\Controllers\FileController;
 use Illuminate\Support\Facades\Route;
 
 // Serve storage files via PHP (fix 404 di Railway/env tanpa symlink)
-Route::get('/storage-file/{folder}/{filename}', [FileController::class, 'serve'])
-    ->where('filename', '.*')
-    ->name('storage.file');
+Route::get('/storage-file', [FileController::class, 'serve'])->name('storage.file');
 
 Route::get('/', [FrontController::class, 'index'])->name('home');
 

@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
-    public function serve(string $folder, string $filename)
+    public function serve(\Illuminate\Http\Request $request)
     {
-        $path = $folder . '/' . $filename;
+        $path = $request->query('path');
 
-        if (!Storage::disk('public')->exists($path)) {
+        if (!$path || !Storage::disk('public')->exists($path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
