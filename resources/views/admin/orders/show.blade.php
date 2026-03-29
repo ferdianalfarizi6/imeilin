@@ -94,11 +94,30 @@
                             
                             <h4 class="text-lg font-bold mb-4 border-b pb-2">Bukti Pembayaran</h4>
                             @if($order->payment_proof)
-                                <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank">
-                                    <img src="{{ asset('storage/' . $order->payment_proof) }}" alt="Bukti Transfer" class="w-full max-w-xs object-cover rounded shadow mb-6 hover:opacity-90 transition cursor-pointer">
-                                </a>
+                                <div class="mb-6">
+                                    <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank" title="Klik untuk melihat gambar penuh">
+                                        <img src="{{ asset('storage/' . $order->payment_proof) }}" alt="Bukti Transfer" class="w-full max-w-xs rounded shadow hover:opacity-90 transition cursor-pointer border dark:border-gray-600">
+                                    </a>
+                                    <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank" class="text-xs text-indigo-500 hover:underline mt-1 inline-block">🔍 Lihat Gambar Penuh</a>
+                                </div>
                             @else
-                                <p class="text-yellow-600 mb-6 italic">Tidak ada bukti pembayaran (Gratis/Reward).</p>
+                                <div class="mb-6 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded">
+                                    <p class="text-yellow-600 dark:text-yellow-400 italic text-sm">⚠️ Tidak ada bukti pembayaran yang diupload.</p>
+                                </div>
+                            @endif
+
+                            <h4 class="text-lg font-bold mb-4 border-b pb-2">Screenshot IMEI</h4>
+                            @if($order->screenshot_imei)
+                                <div class="mb-6">
+                                    <a href="{{ asset('storage/' . $order->screenshot_imei) }}" target="_blank" title="Klik untuk melihat gambar penuh">
+                                        <img src="{{ asset('storage/' . $order->screenshot_imei) }}" alt="Screenshot IMEI" class="w-full max-w-xs rounded shadow hover:opacity-90 transition cursor-pointer border dark:border-gray-600">
+                                    </a>
+                                    <a href="{{ asset('storage/' . $order->screenshot_imei) }}" target="_blank" class="text-xs text-indigo-500 hover:underline mt-1 inline-block">🔍 Lihat Gambar Penuh</a>
+                                </div>
+                            @else
+                                <div class="mb-6 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded">
+                                    <p class="text-yellow-600 dark:text-yellow-400 italic text-sm">⚠️ Tidak ada screenshot IMEI yang diupload.</p>
+                                </div>
                             @endif
                         </div>
 

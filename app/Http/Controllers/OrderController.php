@@ -72,14 +72,24 @@ class OrderController extends Controller
             abort(403);
         }
 
+        // Ambil nomor WA admin dari setting, normalisasi ke format internasional
         $adminPhone = \App\Models\Setting::get('admin_whatsapp', '6288706553307');
+        // Normalisasi: jika diawali 08 -> ganti dengan 628
+        if (str_starts_with($adminPhone, '08')) {
+            $adminPhone = '62' . ltrim($adminPhone, '0');
+        } elseif (str_starts_with($adminPhone, '8')) {
+            $adminPhone = '62' . $adminPhone;
+        }
+        // Bersihkan karakter non-digit
+        $adminPhone = preg_replace('/[^0-9]/', '', $adminPhone);
+
         $order->load(['service', 'imeis']);
         
         $imeiList = collect($order->imeis)->pluck('imei')->implode("\n   ");
         $totalImeis = $order->imeis->count();
         $date = $order->created_at->format('d/m/Y H:i') . ' WIB';
         
-        $message = "━━━━━━━━━━━━━━━━━━━━\n📦 PESANAN BARU MASUK\n━━━━━━━━━━━━━━━━━━━━\n\n📄 Nomor Pesanan: {$order->order_code}\n⏰ Waktu: {$date}\n\n📱 Detail Perangkat:\n   Merek: {$order->brand}\n   Model: {$order->device}\n\n📟 IMEI ({$totalImeis} unit):\n   {$imeiList}\n\n🛠️ Layanan: {$order->service->name}\n💰 Total Bayar: Php " . number_format($order->price, 0, ',', '.') . "\n💳 Metode Bayar: Transfer Bank\n\n📞 WhatsApp Customer: {$order->whatsapp}\n\n📎 Bukti pembayaran sudah di-upload.\n📌 Silakan cek & proses di Admin Dashboard.";
+        $message = "━━━━━━━━━━━━━━━━━━━━\n📦 PESANAN BARU MASUK\n━━━━━━━━━━━━━━━━━━━━\n\n📄 Nomor Pesanan: {$order->order_code}\n⏰ Waktu: {$date}\n\n📱 Detail Perangkat:\n   Merek: {$order->brand}\n   Model: {$order->device}\n\n📟 IMEI ({$totalImeis} unit):\n   {$imeiList}\n\n🛠️ Layanan: {$order->service->name}\n💰 Total Bayar: Rp " . number_format($order->price, 0, ',', '.') . "\n💳 Metode Bayar: Transfer Bank\n\n📞 WhatsApp Customer: {$order->whatsapp}\n\n📎 Bukti pembayaran sudah di-upload.\n📌 Silakan cek & proses di Admin Dashboard.";
         
         $waLink = "https://wa.me/{$adminPhone}?text=" . urlencode($message);
 

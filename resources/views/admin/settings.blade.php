@@ -40,8 +40,15 @@
                         <!-- WhatsApp Admin -->
                         <div class="mb-6">
                             <label class="block text-sm font-medium mb-1">Nomor WhatsApp Admin</label>
-                            <p class="text-xs text-gray-500 mb-2">Digunakan untuk menerima notifikasi pesanan baru (Mulai dengan kode negara, contoh: 628...).</p>
-                            <input type="text" name="settings[admin_whatsapp]" required value="{{ old('settings.admin_whatsapp', $settings['admin_whatsapp'] ?? '628') }}" class="w-full rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600">
+                            <p class="text-xs text-gray-500 mb-2">
+                                Nomor WA yang menerima notifikasi pesanan baru dari pelanggan via tombol konfirmasi di halaman sukses pemesanan.
+                                <strong>Format internasional (tanpa + atau spasi)</strong>, contoh: <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">6288706553307</code>.
+                                Sistem akan otomatis mendeteksi format <code class="bg-gray-100 dark:bg-gray-700 px-1 rounded">08xxx</code> dan mengkonversinya.
+                            </p>
+                            <input type="text" name="settings[admin_whatsapp]" required
+                                value="{{ old('settings.admin_whatsapp', $settings['admin_whatsapp'] ?? '6288706553307') }}"
+                                placeholder="Contoh: 6288706553307"
+                                class="w-full rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600 font-mono">
                             @error('settings.admin_whatsapp') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
