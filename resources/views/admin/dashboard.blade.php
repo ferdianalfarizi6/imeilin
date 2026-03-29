@@ -82,5 +82,68 @@
             </div>
 
         </div>
+
+        <!-- Recent Orders with IMEI -->
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <div class="flex justify-between items-center mb-4 border-b dark:border-gray-700 pb-3">
+                        <h4 class="text-lg font-bold">Data IMEI Pesanan Terbaru</h4>
+                        <a href="{{ route('admin.orders.index') }}" class="text-xs text-indigo-500 hover:underline">Kelola Semua Pesanan &rarr;</a>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-gray-100 dark:bg-gray-700">
+                                <tr>
+                                    <th class="p-3">Kode Pesanan</th>
+                                    <th class="p-3">Pelanggan</th>
+                                    <th class="p-3">Data IMEI</th>
+                                    <th class="p-3 text-center">Status</th>
+                                    <th class="p-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($recentOrders as $ro)
+                                <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750">
+                                    <td class="p-3 font-mono text-xs">{{ $ro->order_code }}</td>
+                                    <td class="p-3 font-bold">{{ optional($ro->user)->name }}</td>
+                                    <td class="p-3">
+                                        @foreach($ro->imeis as $imei)
+                                            <div class="font-mono text-xs">{{ $imei->imei }}</div>
+                                        @endforeach
+                                        @if($ro->imeis->isEmpty())
+                                            <span class="text-gray-400 text-xs">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        @php
+                                            $badgeClass = 'bg-gray-100 text-gray-800';
+                                            if($ro->status == 'verifikasi pembayaran') $badgeClass = 'bg-yellow-100 text-yellow-700';
+                                            elseif($ro->status == 'pembayaran di terima') $badgeClass = 'bg-blue-100 text-blue-700';
+                                            elseif($ro->status == 'proses unblok imei') $badgeClass = 'bg-purple-100 text-purple-700';
+                                            elseif($ro->status == 'imei berhasil di unblok') $badgeClass = 'bg-green-100 text-green-700';
+                                            elseif($ro->status == 'pesanan selesai') $badgeClass = 'bg-emerald-200 text-emerald-800';
+                                        @endphp
+                                        <span class="px-2 py-1 rounded-full text-[10px] font-medium inline-block {{ $badgeClass }}">
+                                            {{ ucwords($ro->status) }}
+                                        </span>
+                                    </td>
+                                    <td class="p-3 text-center">
+                                        <a href="{{ route('admin.orders.show', $ro->id) }}" class="text-indigo-500 hover:underline text-xs bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-full">Kelola</a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="p-4 text-center text-gray-500">Belum ada pesanan terbaru.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </x-app-layout>

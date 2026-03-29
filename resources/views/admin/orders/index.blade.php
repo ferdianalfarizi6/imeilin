@@ -36,6 +36,7 @@
                                     <th class="p-3">Kode Pesanan</th>
                                     <th class="p-3">Pelanggan</th>
                                     <th class="p-3">Layanan</th>
+                                    <th class="p-3">IMEI</th>
                                     <th class="p-3 text-center">Harga</th>
                                     <th class="p-3 text-center">Status</th>
                                     <th class="p-3">Waktu Dibuat</th>
@@ -51,6 +52,14 @@
                                         <p class="text-xs text-gray-500">{{ $order->whatsapp }}</p>
                                     </td>
                                     <td class="p-3">{{ optional($order->service)->name ?? '-' }}</td>
+                                    <td class="p-3">
+                                        @foreach($order->imeis as $imei)
+                                            <div class="font-mono text-xs">{{ $imei->imei }}</div>
+                                        @endforeach
+                                        @if($order->imeis->isEmpty())
+                                            <span class="text-gray-400 text-xs">-</span>
+                                        @endif
+                                    </td>
                                     <td class="p-3 text-center text-xs">Rp {{ number_format($order->price, 0, ',', '.') }}</td>
                                     <td class="p-3 text-center">
                                         @php
@@ -80,7 +89,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="p-4 text-center text-gray-500">Belum ada pesanan ditemukan.</td>
+                                    <td colspan="8" class="p-4 text-center text-gray-500">Belum ada pesanan ditemukan.</td>
                                 </tr>
                                 @endforelse
                             </tbody>

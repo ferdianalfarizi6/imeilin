@@ -17,7 +17,7 @@ class AdminOrderController extends Controller
 
     public function index(Request $request)
     {
-        $query = Order::with('user', 'service')->latest();
+        $query = Order::with('user', 'service', 'imeis')->latest();
         
         // Tab Filter: ongoing vs history
         $tab = $request->query('tab', 'ongoing');

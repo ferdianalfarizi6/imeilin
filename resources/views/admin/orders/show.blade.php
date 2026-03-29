@@ -78,7 +78,23 @@
                                 <tr><td class="py-2 text-gray-500 font-semibold w-1/3">Waktu Pesan</td><td class="py-2">{{ $order->created_at->format('d F Y, H:i') }}</td></tr>
                                 <tr><td class="py-2 text-gray-500 font-semibold w-1/3">Nama Pelanggan</td><td class="py-2">{{ $order->user->name }}</td></tr>
                                 <tr><td class="py-2 text-gray-500 font-semibold w-1/3">WhatsApp</td><td class="py-2">
-                                    <a href="https://wa.me/{{ $order->whatsapp }}" target="_blank" class="text-green-500 hover:underline">{{ $order->whatsapp }}</a>
+                                    @php
+                                        $imeiStr = $order->imeis->pluck('imei')->implode(', ');
+                                        $phone = $order->whatsapp;
+                                        if(str_starts_with($phone, '08')) {
+                                            $phone = '62' . substr($phone, 1);
+                                        } elseif(str_starts_with($phone, '8')) {
+                                            $phone = '62' . $phone;
+                                        }
+                                        $waMsg = "Halo kak {$order->user->name},\n\nPesanan Anda via IMEI Lin:\n*Kode Pesanan: {$order->order_code}*\nLayanan: *{$order->service?->name}*\nBrand/Tipe: *{$order->brand} {$order->device}*\nIMEI: *{$imeiStr}*\nStatus: *" . ucwords($order->status) . "*\n\nTerima kasih!";
+                                        $waLink = "https://wa.me/{$phone}?text=" . urlencode($waMsg);
+                                    @endphp
+                                    <a href="{{ $waLink }}" target="_blank" class="inline-flex items-center gap-1 text-green-600 dark:text-green-400 hover:text-green-700 font-medium hover:underline bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                                          <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.1.133 1.396 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                                        </svg>
+                                        {{ $order->whatsapp }} (Kirim Info Status)
+                                    </a>
                                 </td></tr>
                                 <tr><td class="py-2 text-gray-500 font-semibold w-1/3">Layanan</td><td class="py-2">{{ optional($order->service)->name ?? '-' }}</td></tr>
                                 <tr><td class="py-2 text-gray-500 font-semibold w-1/3">Merek / Tipe</td><td class="py-2">{{ $order->brand }} / {{ $order->device }}</td></tr>
@@ -94,11 +110,15 @@
                             
                             <h4 class="text-lg font-bold mb-4 border-b pb-2">Bukti Pembayaran</h4>
                             @if($order->payment_proof)
+                                @php
+                                    [$pfFolder, $pfFile] = explode('/', $order->payment_proof, 2);
+                                    $pfUrl = route('storage.file', ['folder' => $pfFolder, 'filename' => $pfFile]);
+                                @endphp
                                 <div class="mb-6">
-                                    <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank" title="Klik untuk melihat gambar penuh">
-                                        <img src="{{ asset('storage/' . $order->payment_proof) }}" alt="Bukti Transfer" class="w-full max-w-xs rounded shadow hover:opacity-90 transition cursor-pointer border dark:border-gray-600">
-                                    </a>
-                                    <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank" class="text-xs text-indigo-500 hover:underline mt-1 inline-block">🔍 Lihat Gambar Penuh</a>
+                                    <button type="button" onclick="openImageModal('{{ $pfUrl }}')" title="Klik untuk melihat gambar penuh" class="block focus:outline-none text-left w-full max-w-xs">
+                                        <img src="{{ $pfUrl }}" alt="Bukti Transfer" class="w-full rounded shadow hover:opacity-90 transition cursor-pointer border dark:border-gray-600">
+                                    </button>
+                                    <button type="button" onclick="openImageModal('{{ $pfUrl }}')" class="text-xs text-indigo-500 hover:underline mt-2 inline-block focus:outline-none shrink-0">🔍 Lihat Gambar Penuh di Modal</button>
                                 </div>
                             @else
                                 <div class="mb-6 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded">
@@ -108,11 +128,15 @@
 
                             <h4 class="text-lg font-bold mb-4 border-b pb-2">Screenshot IMEI</h4>
                             @if($order->screenshot_imei)
+                                @php
+                                    [$siFolder, $siFile] = explode('/', $order->screenshot_imei, 2);
+                                    $siUrl = route('storage.file', ['folder' => $siFolder, 'filename' => $siFile]);
+                                @endphp
                                 <div class="mb-6">
-                                    <a href="{{ asset('storage/' . $order->screenshot_imei) }}" target="_blank" title="Klik untuk melihat gambar penuh">
-                                        <img src="{{ asset('storage/' . $order->screenshot_imei) }}" alt="Screenshot IMEI" class="w-full max-w-xs rounded shadow hover:opacity-90 transition cursor-pointer border dark:border-gray-600">
-                                    </a>
-                                    <a href="{{ asset('storage/' . $order->screenshot_imei) }}" target="_blank" class="text-xs text-indigo-500 hover:underline mt-1 inline-block">🔍 Lihat Gambar Penuh</a>
+                                    <button type="button" onclick="openImageModal('{{ $siUrl }}')" title="Klik untuk melihat gambar penuh" class="block focus:outline-none text-left w-full max-w-xs">
+                                        <img src="{{ $siUrl }}" alt="Screenshot IMEI" class="w-full rounded shadow hover:opacity-90 transition cursor-pointer border dark:border-gray-600">
+                                    </button>
+                                    <button type="button" onclick="openImageModal('{{ $siUrl }}')" class="text-xs text-indigo-500 hover:underline mt-2 inline-block focus:outline-none shrink-0">🔍 Lihat Gambar Penuh di Modal</button>
                                 </div>
                             @else
                                 <div class="mb-6 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded">
@@ -205,4 +229,28 @@
             </div>
         </div>
     </div>
+
+    <!-- Image Preview Modal -->
+    <div id="imageModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-80 hidden backdrop-blur-sm transition-opacity" onclick="closeImageModal()">
+        <button class="absolute top-4 right-6 text-white hover:text-gray-300 text-4xl font-bold transition focus:outline-none" onclick="closeImageModal()">&times;</button>
+        <div class="relative max-w-[90%] max-h-[90vh]" onclick="event.stopPropagation()">
+            <img id="modalImg" src="" class="max-w-full max-h-[90vh] rounded shadow-2xl object-contain transition-transform transform scale-95" alt="Preview Gambar">
+        </div>
+    </div>
+
+    <script>
+        function openImageModal(url) {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('modalImg');
+            img.src = url;
+            modal.classList.remove('hidden');
+            setTimeout(() => img.classList.replace('scale-95', 'scale-100'), 50);
+        }
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('modalImg');
+            img.classList.replace('scale-100', 'scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 150);
+        }
+    </script>
 </x-app-layout>

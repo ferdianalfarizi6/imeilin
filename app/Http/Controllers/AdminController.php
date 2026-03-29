@@ -25,7 +25,9 @@ class AdminController extends Controller
             $graphData[] = ['date' => $date, 'income' => $income];
         }
 
-        return view('admin.dashboard', compact('totalOrders', 'totalUsers', 'totalIncome', 'graphData'));
+        $recentOrders = Order::with('user', 'service', 'imeis')->latest()->take(5)->get();
+
+        return view('admin.dashboard', compact('totalOrders', 'totalUsers', 'totalIncome', 'graphData', 'recentOrders'));
     }
 
     public function users()
