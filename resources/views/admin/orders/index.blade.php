@@ -66,8 +66,16 @@
                                         </span>
                                     </td>
                                     <td class="p-3 text-xs">{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                                    <td class="p-3">
-                                        <a href="{{ route('admin.orders.show', $order->id) }}" class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-1 px-3 mt-1 rounded text-xs">Kelola</a>
+                                    <td class="p-3 flex flex-wrap gap-2 items-center">
+                                        <a href="{{ route('admin.orders.show', $order->id) }}" class="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-1 px-3 rounded text-xs">Kelola</a>
+
+                                        @if($order->status === 'verifikasi pembayaran')
+                                        <form method="POST" action="{{ route('admin.orders.destroy', $order->id) }}" onsubmit="return confirm('Yakin hapus pesanan {{ $order->order_code }}? Data IMEI juga akan ikut terhapus.')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="inline-block bg-red-500 hover:bg-red-600 text-white font-medium py-1 px-3 rounded text-xs">Hapus</button>
+                                        </form>
+                                        @endif
                                     </td>
                                 </tr>
                                 @empty

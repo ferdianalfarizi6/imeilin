@@ -109,5 +109,16 @@ class AdminOrderController extends Controller
     public function create() { abort(404); }
     public function store(Request $request) { abort(404); }
     public function edit(Order $order) { abort(404); }
-    public function destroy(Order $order) { abort(404); }
+
+    public function destroy(Order $order)
+    {
+        // Hapus IMEI terkait dulu
+        $order->imeis()->delete();
+
+        // Hapus orderan
+        $order->delete();
+
+        return redirect()->route('admin.orders.index')
+            ->with('success', 'Pesanan berhasil dihapus.');
+    }
 }
