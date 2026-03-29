@@ -12,6 +12,7 @@ class SettingController extends Controller
         $settings = [
             'bank_account' => Setting::get('bank_account', 'BCA 123456789 a/n Admin'),
             'admin_email' => Setting::get('admin_email', 'admin@example.com'),
+            'admin_whatsapp' => Setting::get('admin_whatsapp', '088706553307'),
         ];
         
         return view('admin.settings', compact('settings'));
@@ -23,6 +24,7 @@ class SettingController extends Controller
             'settings' => 'required|array',
             'settings.bank_account' => 'required|string',
             'settings.admin_email' => 'required|email',
+            'settings.admin_whatsapp' => 'required|string|max:20',
         ]);
 
         foreach ($request->settings as $key => $value) {

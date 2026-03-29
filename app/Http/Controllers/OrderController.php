@@ -72,7 +72,7 @@ class OrderController extends Controller
             abort(403);
         }
 
-        $adminPhone = '088706553307';
+        $adminPhone = \App\Models\Setting::get('admin_whatsapp', '6288706553307');
         $order->load(['service', 'imeis']);
         
         $imeiList = collect($order->imeis)->pluck('imei')->implode("\n   ");

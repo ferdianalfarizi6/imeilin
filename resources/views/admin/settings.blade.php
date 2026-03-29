@@ -37,6 +37,14 @@
                             @error('settings.admin_email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                         </div>
 
+                        <!-- WhatsApp Admin -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium mb-1">Nomor WhatsApp Admin</label>
+                            <p class="text-xs text-gray-500 mb-2">Digunakan untuk menerima notifikasi pesanan baru (Mulai dengan kode negara, contoh: 628...).</p>
+                            <input type="text" name="settings[admin_whatsapp]" required value="{{ old('settings.admin_whatsapp', $settings['admin_whatsapp'] ?? '628') }}" class="w-full rounded border-gray-300 dark:bg-gray-700 dark:border-gray-600">
+                            @error('settings.admin_whatsapp') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                        </div>
+
                         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition">
                             Simpan Pengaturan
                         </button>
