@@ -39,5 +39,11 @@ export default {
         'grid',
         'hidden',
         'block',
+        // Admin Badge Colors
+        'bg-yellow-100', 'text-yellow-700',
+        'bg-blue-100', 'text-blue-700',
+        'bg-purple-100', 'text-purple-700',
+        'bg-green-100', 'text-green-700',
+        'bg-emerald-200', 'text-emerald-800'
     ],
 };
