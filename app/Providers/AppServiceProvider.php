@@ -20,15 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.env') === 'production' || str_contains(config('app.url'), 'https://')) {
-            URL::forceScheme('https');
-        }
-
-        // Paksa URL Root agar terhindar dari /public/ jika environment tidak sinkron
         if (config('app.env') === 'production') {
-            config(['app.asset_url' => config('app.url')]);
-            URL::forceRootUrl(config('app.url'));
-            app('url')->formatRoot(config('app.url'));
+            URL::forceScheme('https');
         }
     }
 }
