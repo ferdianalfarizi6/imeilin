@@ -10,14 +10,12 @@ class FileController extends Controller
     {
         $path = $request->query('path');
 
-        if (!$path || !Storage::disk('public')->exists($path)) {
+        if (!is_string($path) || !Storage::disk('public')->exists($path)) {
             abort(404, 'File tidak ditemukan.');
         }
 
-        $fullPath = Storage::disk('public')->path($path);
-        $mimeType = mime_content_type($fullPath) ?: 'application/octet-stream';
-        $file     = Storage::disk('public')->get($path);
+        $fullPath = storage_path('app/public/' . ltrim($path, '/'));
 
-        return response($file, 200)->header('Content-Type', $mimeType);
+        return response()->file($fullPath);
     }
 }
